@@ -29,6 +29,8 @@ typedef struct s_fractal
 	int		endian;
 	int		x;
 	int		y;
+	double	offset_x;
+	double	offset_y;
 	double	zx;
 	double	zy;
 	double	zoom;

@@ -1,11 +1,10 @@
-#include "fractol.h"
-#include "gpt.h"
+#include "../fractol.h"
 #include <math.h>
 #include <stdlib.h>
 
 #define WIDTH 800
 #define HEIGHT 600
-#define MAX_ITER 30
+#define MAX_ITER 70
 
 // Dibuja un píxel de color
 void mlx_pixel_put_color(void *mlx, void *win, int x, int y, int color)
