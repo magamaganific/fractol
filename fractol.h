@@ -36,6 +36,9 @@ typedef struct s_fractal
 	double	zoom;
 	char	*name;
 	int		max_iterations;
+	int		set_type;  // 0 para Mandelbrot, 1 para Julia
+	double	c_re;  // Parte real de c para Julia
+	double	c_im; 
 }			t_fractal;
 
 #endif

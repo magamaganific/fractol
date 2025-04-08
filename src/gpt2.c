@@ -4,7 +4,7 @@
 
 #define WIDTH 800
 #define HEIGHT 600
-#define MAX_ITER 70
+#define MAX_ITER 30
 
 // Dibuja un píxel de color
 void mlx_pixel_put_color(void *mlx, void *win, int x, int y, int color)
@@ -33,6 +33,25 @@ int mandelbrot(int x, int y, t_fractal *f)
 	return (iter);
 }
 
+// Cálculo del conjunto de Julia
+int julia(int x, int y, t_fractal *f)
+{
+	double real = ((x - WIDTH / 2.0) * 4.0 / WIDTH) / f->zoom + f->offset_x;
+	double imag = ((y - HEIGHT / 2.0) * 4.0 / HEIGHT) / f->zoom + f->offset_y;
+	int iter;
+
+	for (iter = 0; iter < MAX_ITER; iter++)
+	{
+		double real2 = real * real - imag * imag + f->c_re;
+		double imag2 = 2 * real * imag + f->c_im;
+		real = real2;
+		imag = imag2;
+		if (real * real + imag * imag > 4)
+			break ;
+	}
+	return (iter);
+}
+
 // Dibuja el fractal en la ventana
 void draw_fractal(t_fractal *f)
 {
@@ -42,11 +61,16 @@ void draw_fractal(t_fractal *f)
 	{
 		for (x = 0; x < WIDTH; x++)
 		{
-			iter = mandelbrot(x, y, f);
+			if (f->set_type == 0)  // Mandelbrot
+				iter = mandelbrot(x, y, f);
+			else  // Julia
+				iter = julia(x, y, f);
+
 			if (iter == MAX_ITER)
 				color = 0x000000;
 			else
 				color = (iter * 255 / MAX_ITER) << 17;
+
 			mlx_pixel_put_color(f->mlx, f->win, x, y, color);
 		}
 	}
@@ -90,10 +114,13 @@ int main()
 	t_fractal f;
 
 	f.mlx = mlx_init();
-	f.win = mlx_new_window(f.mlx, WIDTH, HEIGHT, "Mandelbrot Fractal");
+	f.win = mlx_new_window(f.mlx, WIDTH, HEIGHT, "Fractal");
 	f.zoom = 1.0;
 	f.offset_x = 0.0;
 	f.offset_y = 0.0;
+	f.set_type = 1;  // 1 para Julia, 0 para Mandelbrot
+	f.c_re = -0.9;   // Parte real de c (modifica según lo que quieras)
+	f.c_im = 0.156;  // Parte imaginaria de c (modifica según lo que quieras)
 
 	draw_fractal(&f);
 
