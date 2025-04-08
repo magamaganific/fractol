@@ -256,20 +256,26 @@ int main()
 {
 	t_fractal f;
 
+	//preparar ventana
 	f.mlx = mlx_init();
 	f.win = mlx_new_window(f.mlx, WIDTH, HEIGHT, "Fractal");
+	//control zoom
 	f.zoom = 1.0;
 	f.offset_x = 0.0;
 	f.offset_y = 0.0;
+	// elección de sets
 	f.set_type = 1;  // 1 para Julia, 0 para Mandelbrot
 	f.c_re = -0.9;   // Parte real de c (modifica según lo que quieras)
 	f.c_im = 0.156;  // Parte imaginaria de c (modifica según lo que quieras)
 
+	//fractales
 	draw_fractal(&f);
 
+	// establecer controles
 	mlx_mouse_hook(f.win, mouse_hook, &f);
 	mlx_key_hook(f.win, key_hook, &f);
 	mlx_hook(f.win, 17, 0, close_window, &f);
+	// crear ventana
 	mlx_loop(f.mlx);
 	return (0);
 }
