@@ -10,4 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../fractol.h"
 
+int main(int ac, char **av)
+{
+	t_fractal f;
+	//preparar la ventana;
+
+	return (0);
+}
