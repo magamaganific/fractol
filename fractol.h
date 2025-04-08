@@ -18,27 +18,29 @@
 # include <math.h>
 # include <pthread.h>
 
+# ifndef WIDTH
+#  define WIDTH 800
+# endif
+# ifndef HEIGHT
+#  define HEIGHT 600
+# endif
+# ifndef MAX_ITER
+#  define MAX_ITER 2
+# endif
+# ifndef SET_TYPE
+#  define SET_TYPE 0
+# endif
+
 typedef struct s_fractal
 {
 	void	*mlx;
 	void	*win;
-	void	*imag;
-	void	*point_image;
-	int		bits_pixel;
-	int		size_line;
-	int		endian;
-	int		x;
-	int		y;
+	double	zoom;
 	double	offset_x;
 	double	offset_y;
-	double	zx;
-	double	zy;
-	double	zoom;
-	char	*name;
-	int		max_iterations;
 	int		set_type;  // 0 para Mandelbrot, 1 para Julia
 	double	c_re;  // Parte real de c para Julia
-	double	c_im; 
-}			t_fractal;
+	double	c_im;  // Parte imaginaria de c para Julia
+}	t_fractal;
 
 #endif
