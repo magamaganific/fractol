@@ -12,10 +12,19 @@
 
 #include "../fractol.h"
 
+ft_input_admin()
+{
+	av[1];
+}
+
 int main(int ac, char **av)
 {
 	t_fractal f;
-	//preparar la ventana;
-
+	
+	ft_input_admin();
+	ft_window_prep();
+	draw_set();
+	ft_controls();
+	mlx_loop(f.mlx);
 	return (0);
 }
