@@ -4,7 +4,7 @@ RESET = \033[0m
 
 NAME = fractol
 
-CC_FLGS = cc -Wall -Werror -Wextra -lm
+CC_FLGS = cc -Wall -Werror -Wextra
 LIB_PATH = includes/libft
 MLX_PATH = includes/minilibx-linux
 
@@ -21,7 +21,7 @@ MLX = $(MLX_PATH)/libmlx.a
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(MLX) $(OBJ_FILES)
-	@$(CC_FLGS) -o $@ $^ -L$(LIB_PATH) -lft -L$(MLX_PATH) -lmlx -lXext -lX11
+	@$(CC_FLGS)  -lm -o $@ $^ -L$(LIB_PATH) -lft -L$(MLX_PATH) -lmlx -lXext -lX11
 	@echo "$(SPURP)\n---------------------OBJECTS CREATED---------------------\n$(RESET)"
 	@echo "$(PURP)\n---------------------$(NAME) CREATED---------------------\n$(RESET)"
 

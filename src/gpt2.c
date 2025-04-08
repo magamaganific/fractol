@@ -66,8 +66,8 @@ int get_neon_color(int iter)
     else
     {
         red = (int)(255 * sin(0.1 * iter));
-        green = (int)(255 * cos(0.1 * iter));
-        blue = (int)(255 * sin(0.05 * iter));
+        green = (int)(255 * sin(0.05 * iter));
+        blue = (int)(255 * cos(0.1 * iter));
 
         // Hacerlo más "brillante" o neón
         red = red > 128 ? 255 : red * 2;
@@ -247,6 +247,15 @@ int mouse_hook(int button, int x, int y, void *param)
 	return (0);
 }
 
+int key_hook(int keycode, void *param)
+{
+    if (keycode == 65307)  // 65307 es el código de la tecla ESC
+    {
+        close_window(param); // Cierra la ventana si se presiona ESC
+    }
+    return (0);
+}
+
 int main()
 {
 	t_fractal f;
@@ -263,6 +272,7 @@ int main()
 	draw_fractal(&f);
 
 	mlx_mouse_hook(f.win, mouse_hook, &f);
+	mlx_key_hook(f.win, key_hook, &f);
 	mlx_hook(f.win, 17, 0, close_window, &f);
 	mlx_loop(f.mlx);
 	return (0);
