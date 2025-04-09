@@ -4,7 +4,7 @@ RESET = \033[0m
 
 NAME = fractol
 
-CC_FLGS = cc -Wall -Werror -Wextra
+CC_FLGS = cc -Wall -Werror -Wextra -g3
 LIB_PATH = includes/libft
 MLX_PATH = includes/minilibx-linux
 
