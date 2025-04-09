@@ -25,7 +25,7 @@
 #  define HEIGHT 600
 # endif
 # ifndef MAX_ITER
-#  define MAX_ITER 2
+#  define MAX_ITER 30
 # endif
 # ifndef SET_TYPE
 #  define SET_TYPE 0
@@ -42,5 +42,8 @@ typedef struct s_fractal
 	double	c_re;  // Parte real de c para Julia
 	double	c_im;  // Parte imaginaria de c para Julia
 }	t_fractal;
+
+
+long	ft_atol(const char *nptr);
 
 #endif
