@@ -27,8 +27,23 @@
 # ifndef MAX_ITER
 #  define MAX_ITER 30
 # endif
-# ifndef SET_TYPE
-#  define SET_TYPE 0
+# ifndef MANDEL
+#  define MANDEL 0
+# endif
+# ifndef JULIA
+#  define JULIA 1
+# endif
+# ifndef BICHRO
+#  define BICHRO 0
+# endif
+# ifndef RAINBOW
+#  define RAINBOW 1
+# endif
+# ifndef PASTEL
+#  define PASTEL 2
+# endif
+# ifndef NEON
+#  define NEON 3
 # endif
 
 typedef struct s_fractal
@@ -38,6 +53,7 @@ typedef struct s_fractal
 	double	zoom;
 	double	offset_x;
 	double	offset_y;
+	int		set_style;
 	int		set_type;  // 0 para Mandelbrot, 1 para Julia
 	double	c_re;  // Parte real de c para Julia
 	double	c_im;  // Parte imaginaria de c para Julia

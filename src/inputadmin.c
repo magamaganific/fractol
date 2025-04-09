@@ -108,7 +108,28 @@ void	ft_jul_param(char *real, char *imag, t_fractal *f)
 	double	im;
 
 	re = ft_atol(real);
-	imag = ft_atol(imag);
+	im = ft_atol(imag);
+	while ((re || im) >= 1.00 || (re || im) <= -1.00)
+	{
+		if (re >= 1)
+			re = re / 10;
+		if (im >= 1)
+			im = im / 10;
+	}
+	f->c_re =  re;
+	f->c_im = im;
+}
+
+void	ft_style(char *input, t_fractal *f)
+{
+	if (ft_strncmp("rainbow", input, ft_strlen(input)) == RIGHT)
+		f->set_style = RAINBOW;
+	else if (ft_strncmp("pastel", input, ft_strlen(input)) == RIGHT)
+		f->set_style = PASTEL;
+	else if (ft_strncmp("neon", input, ft_strlen(input)) == RIGHT)
+		f->set_style = NEON;
+	else if (ft_strncmp("bichromatic", input, ft_strlen(input)) == RIGHT)
+		f->set_style = BICHRO;
 }
 
 

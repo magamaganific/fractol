@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "push_swap.h"
+#include "fractol.h"
 
 long	ft_atol(const char *nptr)
 {
