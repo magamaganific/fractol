@@ -69,28 +69,28 @@ int	ft_str_is_num(char *arg)
 int ft_input_params(char *real, char *imag)
 {
 	if (ft_str_is_num(real) == WRONG || ft_str_is_num(imag) == WRONG)
-		return (WRONG);
+		exit(0);
 	return (RIGHT);
 }
 
 int	ft_input_style(char *input)
 {
-	if (ft_strncmp("rainbow", input, ft_strlen("rainbow")) != RIGHT
-		&& ft_strncmp("pastel", input, ft_strlen("pastel")) != RIGHT
-		&& ft_strncmp("neon", input, ft_strlen("neon")) != RIGHT
-		&& ft_strncmp("bichromatic", input, ft_strlen("bichromatic")) != RIGHT)
+	if (ft_strncmp("rainbow", input, ft_strlen(input)) != RIGHT
+		&& ft_strncmp("pastel", input, ft_strlen(input)) != RIGHT
+		&& ft_strncmp("neon", input, ft_strlen(input)) != RIGHT
+		&& ft_strncmp("bichromatic", input, ft_strlen(input)) != RIGHT)
 		return (WRONG);
 	return (RIGHT);
 }
 
 int	ft_check_input(int ac, char **av)
 {
-	if (ft_strncmp("mandelbrot", av[1], ft_strlen("mandelbrot")) == RIGHT)
+	if (ft_strncmp("mandelbrot", av[1], ft_strlen(av[1])) == RIGHT)
 	{
 		if ((ac == 3 && ft_input_style(av[2]) == WRONG) || ac > 3)
 			return (WRONG);
 	}
-	else if(ft_strncmp("julia", av[1], ft_strlen("julia")) == RIGHT)
+	else if(ft_strncmp("julia", av[1], ft_strlen(av[1])) == RIGHT)
 	{
 		if (ac > 2)
 		{
@@ -122,52 +122,51 @@ void	ft_jul_param(char *real, char *imag, t_fractal *f)
 	double	re;
 	double	im;
 
-	re = ft_atol(real);
-	im = ft_atol(imag);
+	re = (double)ft_atol(real);
+	im = (double)ft_atol(imag);
 	while (re >= 1.0 || im >= 1.0 || re <= -1.0 || im <= -1.0)
 	{
-		if (re >= 1)
+		if (re >= 1.0 || re <= -1.0)
 			re = re / 10;
-		if (im >= 1)
+		if (im <= -1.0 || im >= 1.0)
 			im = im / 10;
 	}
-	f->c_re =  re;
+	f->c_re = re;
 	f->c_im = im;
 }
 
 void	ft_style(char *input, t_fractal *f)
 {
-	if (ft_strncmp("rainbow", input, ft_strlen("rainbow")) == RIGHT)
+	if (ft_strncmp("rainbow", input, ft_strlen(input)) == RIGHT)
 		f->set_style = RAINBOW;
-	else if (ft_strncmp("pastel", input, ft_strlen("pastel")) == RIGHT)
+	else if (ft_strncmp("pastel", input, ft_strlen(input)) == RIGHT)
 		f->set_style = PASTEL;
-	else if (ft_strncmp("neon", input, ft_strlen("neon")) == RIGHT)
+	else if (ft_strncmp("neon", input, ft_strlen(input)) == RIGHT)
 		f->set_style = NEON;
-	else if (ft_strncmp("bichromatic", input, ft_strlen("bichromatic")) == RIGHT)
+	else if (ft_strncmp("bichromatic", input, ft_strlen(input)) == RIGHT)
 		f->set_style = BICHRO;
 }
 
 
 void	ft_input_admin(int ac, char **av, t_fractal *f)
 {
-	if (ft_strncmp("julia", av[1], ft_strlen("julia")) == RIGHT)
+	if (ft_strncmp("julia", av[1], ft_strlen(av[1])) == RIGHT)
 	{
 		f->set_type = JULIA;
 		if (ac >= 4)
 		{
-			if (ft_input_params(av[2], av[3]) == RIGHT)
-				ft_jul_param(av[2], av[3], f);
+			ft_jul_param(av[2], av[3], f);
 			if (ac == 5)
 				ft_style(av[4], f);
 		}
 		else
 		{
-			f->c_re = -0.9;
-			f->c_im = 0.156;
 			f->set_style = BICHRO;
+			if (ac == 3)
+				ft_style(av[2], f);
 		}
 	}
-	else if (ft_strncmp("mandelbrot", av[1], ft_strlen("mandelbrot")) == RIGHT)
+	else if (ft_strncmp("mandelbrot", av[1], ft_strlen(av[1])) == RIGHT)
 	{
 		f->set_type = MANDEL;
 		f->set_style = BICHRO;
@@ -181,19 +180,19 @@ int	mandelbrot(int x, int y, t_fractal *f)
 {
 	double	real;
 	double	imag;
-	double	temp;
+	t_cnums	c;
 	int		iter;
 	
 	iter = -1;
 	real = ((x - WIDTH / 2.0) * 4.0 / WIDTH) / f->zoom + f->offset_x;
 	imag = ((y - HEIGHT / 2.0) * 4.0 / HEIGHT) / f->zoom + f->offset_y;
-	f->c_re = real;
-	f->c_im = imag;
+	c.re = real;
+	c.im = imag;
 	while (iter++ < MAX_ITER && (real * real + imag * imag) < 4)
 	{
-		temp = real * real - imag * imag + f->c_re;
-		imag = 2 * real * imag + f->c_im;
-		real = temp;
+		c.temp = real * real - imag * imag + c.re;
+		imag = 2 * real * imag + c.im;
+		real = c.temp;
 	}
 	return (iter);
 }
@@ -217,7 +216,7 @@ int	julia(int x, int y, t_fractal *f)
 	return (iter);
 }
 
-int	get_rainbow_color(int iter, t_fractal *f)
+int	get_rainbow_color(int iter)
 {
 	int	red;
 	int	green;
@@ -225,31 +224,40 @@ int	get_rainbow_color(int iter, t_fractal *f)
 	int color_index;
 
 	color_index = (iter * 15) % 256;
-
-	red = (color_index) % 256;
-	green = (color_index * 2) % 256;
-	blue = (color_index * 3) % 256;
-
-	red = (red + (int)(f->c_im * 50)) % 256;
-	green = (green + (int)(f->c_re * 50)) % 256;
-	
-	return (red << 16) | (green << 8) | blue;
+	if (iter < MAX_ITER)
+	{
+		red = (color_index) % 256;
+		green = (color_index * 2) % 256;
+		blue = (color_index * 3) % 256;
+	}
+	else
+	{
+		red = 0x000000;
+		green = 0x000000;
+		blue = 0x000000;
+	}
+	return ((red << 16) | (green << 8) | blue);
 }
 
-int	get_pastel_color(int iter, t_fractal *f)
+int	get_pastel_color(int iter)
 {
 	int	red;
 	int	green;
 	int	blue;
 
-	red = (iter * 30) % 128 + 128;
-	green = (iter * 15) % 128 + 128;
-	blue = (iter * 5) % 128 + 128;
-
-	red = (red + (int)(f->c_re * 20)) % 256;
-	green = (green + (int)(f->c_im * 20)) % 256;
-
-	return (red << 16) | (green << 8) | blue;
+	if (iter < MAX_ITER)
+	{
+		red = (iter * 30) % 128 + 128;
+		green = (iter * 15) % 128 + 128;
+		blue = (iter * 5) % 128 + 128;
+	}
+	else
+	{
+		red = 0x000000;
+		green = 0x000000;
+		blue = 0x000000;
+	}
+	return ((red << 16) | (green << 8) | blue);
 }
 
 int get_neon_color(int iter)
@@ -258,22 +266,30 @@ int get_neon_color(int iter)
 	int	green;
 	int	blue;
 
-	red = (int)(255 * sin(0.1 * iter));
-	green = (int)(255 * sin(0.05 * iter));
-	blue = (int)(255 * cos(0.1 * iter));
-
+	if (iter < MAX_ITER)
+	{
+		red = (int)(255 * sin(0.1 * iter));
+		green = (int)(255 * sin(0.05 * iter));
+		blue = (int)(255 * cos(0.1 * iter));
+	}
+	else
+	{
+		red = 0x000000;
+		green = 0x000000;
+		blue = 0x000000;
+	}
 	red = red > 128 ? 255 : red * 2;
 	green = green > 128 ? 255 : green * 2;
 	blue = blue > 128 ? 255 : blue * 2;
-
-	return (red << 16) | (green << 8) | blue;
+	return ((red << 16) | (green << 8) | blue);
 }
 
-int	get_bichro_color(int iter,t_fractal *f)
+int	get_bichro_color(int iter)
 {
 	int	red;
 	int	green;
 	int	blue;
+
 	if (iter < MAX_ITER)
 	{
 		red = (iter * 9) % 256;
@@ -282,26 +298,24 @@ int	get_bichro_color(int iter,t_fractal *f)
 	}
 	else
 	{
-		red = 0;
-		green = 0;
-		blue = 0;
+		red = 0x000000;
+		green = 0x000000;
+		blue = 0x000000;
 	}
-	red = (red + (int)(f->c_im * 100)) % 256;
-	green = (green + (int)(f->c_re * 100)) % 256;
-	return (red << 16) | (green << 8) | blue;
+	return ((red << 16) | (green << 8) | blue);
 }
 
 int	get_color(int iter, t_fractal *f)
 {
 	if (f->set_style == RAINBOW)
-		return (get_rainbow_color(iter, f));
+		return (get_rainbow_color(iter));
 	else if (f->set_style == PASTEL)
-		return (get_pastel_color(iter, f));
+		return (get_pastel_color(iter));
 	else if (f->set_style == NEON)
 		return (get_neon_color(iter));
 	else if (f->set_style == BICHRO)
-		return (get_bichro_color(iter, f));
-	return (get_bichro_color(iter, f));
+		return (get_bichro_color(iter));
+	return (get_bichro_color(iter));
 }
 
 void	draw_set(t_fractal *f)
@@ -319,7 +333,7 @@ void	draw_set(t_fractal *f)
 		{
 			if (f->set_type == MANDEL)
 				iter = mandelbrot(x, y, f);
-			else if (f->set_type == JULIA)
+			else
 				iter = julia(x, y, f);
 			color = (iter == MAX_ITER) ? 0x000000 : get_color(iter, f);
 			ft_pixel_put(f, x, y, color);
@@ -379,6 +393,8 @@ int main(int ac, char **av)
 		ft_print_av_param();
 		return (0);
 	}
+	f.c_re = -0.9;
+	f.c_im = 0.156;
 	ft_input_admin(ac, av, &f);
 	ft_window_prep(&f);
 	draw_set(&f);

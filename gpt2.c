@@ -264,7 +264,7 @@ int main()
 	f.offset_x = 0.0;
 	f.offset_y = 0.0;
 	// elección de sets
-	f.set_type = 1;  // 1 para Julia, 0 para Mandelbrot
+	f.set_type = 0;  // 1 para Julia, 0 para Mandelbrot
 	f.c_re = -0.9;   // Parte real de c (modifica según lo que quieras)
 	f.c_im = 0.156;  // Parte imaginaria de c (modifica según lo que quieras)
 

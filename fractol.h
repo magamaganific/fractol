@@ -68,6 +68,7 @@ typedef struct s_cnums
 {
 	double	re;
 	double	im;
+	double	temp;
 }	t_cnums;
 
 
