@@ -25,7 +25,7 @@
 #  define HEIGHT 600
 # endif
 # ifndef MAX_ITER
-#  define MAX_ITER 30
+#  define MAX_ITER 60
 # endif
 # ifndef MANDEL
 #  define MANDEL 0
@@ -57,7 +57,18 @@ typedef struct s_fractal
 	int		set_type;  // 0 para Mandelbrot, 1 para Julia
 	double	c_re;  // Parte real de c para Julia
 	double	c_im;  // Parte imaginaria de c para Julia
+	void	*img;
+	char	*img_addr;
+	int		bpp;
+	int		line_len;
+	int		endian;
 }	t_fractal;
+
+typedef struct s_cnums
+{
+	double	re;
+	double	im;
+}	t_cnums;
 
 
 long	ft_atol(const char *nptr);

@@ -40,9 +40,14 @@ void	ft_print_av_param(void)
 	ft_printf("    --------------_EXPECTED_INPUT_--------------\n");
 }
 
-void mlx_pixel_put_color(void *mlx, void *win, int x, int y, int color)
+void ft_pixel_put(t_fractal *f, int x, int y, int color)
 {
-	mlx_pixel_put(mlx, win, x, y, color);
+	char	*dst;
+
+	if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT)
+		return;
+	dst = f->img_addr + (y *f->line_len + x * (f->bpp / 8));
+	*(unsigned int *)dst = color;
 }
 
 int	ft_str_is_num(char *arg)
@@ -70,10 +75,10 @@ int ft_input_params(char *real, char *imag)
 
 int	ft_input_style(char *input)
 {
-	if (ft_strncmp("rainbow", input, ft_strlen("rainbow") - 1) != RIGHT
-		&& ft_strncmp("pastel", input, ft_strlen("pastel") - 1) != RIGHT
-		&& ft_strncmp("neon", input, ft_strlen("neon") - 1) != RIGHT
-		&& ft_strncmp("bichromatic", input, ft_strlen("bichromatic") - 1) != RIGHT)
+	if (ft_strncmp("rainbow", input, ft_strlen("rainbow")) != RIGHT
+		&& ft_strncmp("pastel", input, ft_strlen("pastel")) != RIGHT
+		&& ft_strncmp("neon", input, ft_strlen("neon")) != RIGHT
+		&& ft_strncmp("bichromatic", input, ft_strlen("bichromatic")) != RIGHT)
 		return (WRONG);
 	return (RIGHT);
 }
@@ -105,6 +110,8 @@ void	ft_window_prep(t_fractal *f)
 {
 	f->mlx = mlx_init();
 	f->win = mlx_new_window(f->mlx, WIDTH, HEIGHT, "Fractol");
+	f->img = mlx_new_image(f->mlx, WIDTH, HEIGHT);
+	f->img_addr = mlx_get_data_addr(f->img, &f->bpp, &f->line_len, &f->endian);
 	f->zoom = 1.0;
 	f->offset_x = 0.0;
 	f->offset_y = 0.0;
@@ -130,20 +137,20 @@ void	ft_jul_param(char *real, char *imag, t_fractal *f)
 
 void	ft_style(char *input, t_fractal *f)
 {
-	if (ft_strncmp("rainbow", input, ft_strlen(input)) == RIGHT)
+	if (ft_strncmp("rainbow", input, ft_strlen("rainbow")) == RIGHT)
 		f->set_style = RAINBOW;
-	else if (ft_strncmp("pastel", input, ft_strlen(input)) == RIGHT)
+	else if (ft_strncmp("pastel", input, ft_strlen("pastel")) == RIGHT)
 		f->set_style = PASTEL;
-	else if (ft_strncmp("neon", input, ft_strlen(input)) == RIGHT)
+	else if (ft_strncmp("neon", input, ft_strlen("neon")) == RIGHT)
 		f->set_style = NEON;
-	else if (ft_strncmp("bichromatic", input, ft_strlen(input)) == RIGHT)
+	else if (ft_strncmp("bichromatic", input, ft_strlen("bichromatic")) == RIGHT)
 		f->set_style = BICHRO;
 }
 
 
 void	ft_input_admin(int ac, char **av, t_fractal *f)
 {
-	if (ft_strncmp("Julia", av[1], ft_strlen(av[1])) == RIGHT)
+	if (ft_strncmp("julia", av[1], ft_strlen("julia")) == RIGHT)
 	{
 		f->set_type = JULIA;
 		if (ac >= 4)
@@ -160,7 +167,7 @@ void	ft_input_admin(int ac, char **av, t_fractal *f)
 			f->set_style = BICHRO;
 		}
 	}
-	else
+	else if (ft_strncmp("mandelbrot", av[1], ft_strlen("mandelbrot")) == RIGHT)
 	{
 		f->set_type = MANDEL;
 		f->set_style = BICHRO;
@@ -314,34 +321,30 @@ void	draw_set(t_fractal *f)
 				iter = mandelbrot(x, y, f);
 			else if (f->set_type == JULIA)
 				iter = julia(x, y, f);
-
-			if (iter == MAX_ITER)
-				color = 0x000000;
-			else
-				color = get_color(iter, f);
-
-			mlx_pixel_put_color(f->mlx, f->win, x, y, color);
+			color = (iter == MAX_ITER) ? 0x000000 : get_color(iter, f);
+			ft_pixel_put(f, x, y, color);
 		}
 	}
+	mlx_put_image_to_window(f->mlx, f->win, f->img, 0, 0);
 }
 
 int	mouse_hook(int button, int x, int y, void *param)
 {
 	t_fractal	*f;
-	double		old_zoom;
 	double		mouse_real;
 	double 		mouse_imag;
 
 	f = (t_fractal *)param;
-	old_zoom = f->zoom;
+	mouse_real = ((x - WIDTH / 2.0) * 4.0 / WIDTH) / f->zoom + f->offset_x;
+	mouse_imag = ((y - HEIGHT / 2.0) * 4.0 / HEIGHT) / f->zoom + f->offset_y;
 	if (button == 4)
 		f->zoom *= 1.2;
 	else if (button == 5)
 		f->zoom /= 1.2;
 	else
 		return (0);
-	mouse_real = ((x - WIDTH / 2.0) * 4.0 / WIDTH) / old_zoom + f->offset_x;
-	mouse_imag = ((y - HEIGHT / 2.0) * 4.0 / HEIGHT) / old_zoom + f->offset_y;
+	f->offset_x = mouse_real - ((x - WIDTH / 2.0) * 4.0 / WIDTH) / f->zoom;
+	f->offset_y = mouse_imag - ((y - HEIGHT / 2.0) * 4.0 / HEIGHT) / f->zoom;
 	draw_set(f);
 	return(0);
 }
